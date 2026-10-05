@@ -1,0 +1,49 @@
+# shellcheck and a Python syntax check, then the tests on the runner's tmux,
+# under the oldest and newest Python hintbar supports.
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tmux and shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tmux shellcheck
+          tmux -V
+          python3 --version
+
+      - name: shellcheck and unit tests
+        run: |
+          shellcheck hintbar.tmux scripts/clip.sh tests/*.sh
+          python3 -m unittest discover -s tests
+
+      - name: Smoke tests
+        env:
+          TMUX_TMPDIR: ${{ runner.temp }}
+        run: |
+          tests/smoke.sh
+          VI=on HINT_LINES=auto tests/smoke.sh examples/remap.conf
+          HINT_LINES=2 tests/smoke.sh examples/remap.conf pill
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: Unit and smoke tests under Python 3.8
+        env:
+          TMUX_TMPDIR: ${{ runner.temp }}
+        run: |
+          python3 -m unittest discover -s tests
+          VI=on tests/smoke.sh examples/remap.conf
+
+      - name: Attached-client test (needs tmux 3.4 or newer)
+        env:
+          TMUX_TMPDIR: ${{ runner.temp }}
+        run: tests/attached.sh 80 120 200
