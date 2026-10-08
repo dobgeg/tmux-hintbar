@@ -4,7 +4,9 @@ import re
 
 C = '#,'  # a comma inside #{?...} branches
 
-PALETTE = dict(bar='colour0', text='colour15', block='colour15', label='colour0', key='',
+# The bar is the terminal's own background and text: many schemes make
+# "black" (colour0) a grey that shows as a strip against the background.
+PALETTE = dict(bar='default', text='default', block='colour15', label='colour0', key='',
                prefix='colour3', copy='colour4', window='colour2', other='colour5',
                border='colour8', muted='colour7', alert='colour1')
 

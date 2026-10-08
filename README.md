@@ -131,7 +131,7 @@ the default until it's fixed.
 | `plain` | square | nothing; works everywhere |
 | `pill` | rounded | a Nerd Font |
 | `slant` | slanted | a Nerd Font |
-| `arrow` | Powerline arrows | a Powerline font (a Nerd Font 3+ if your bar is transparent) |
+| `arrow` | Powerline arrows | a Powerline font; a Nerd Font 3+ without a theme or with a transparent bar |
 | `custom` | your own, from `@hintbar-glyphs` | whatever you pick |
 
 The shaped styles (`pill`, `slant`, `arrow`) also put Nerd Font icons by the
@@ -156,7 +156,7 @@ name):
 | `bar` | the bar's background |
 | `text` | the bar's own text: windows, session, `…` |
 | `block`, `label` | hint shapes, and the text in them |
-| `key` | keys inside the hints (themes without it use `alert`) |
+| `key` | keys inside the hints (themes without it use `alert`, or `label` if that's missing too) |
 | `prefix`, `copy` | the TMUX and COPY badges; messages and selection use `prefix` |
 | `window` | the current window and the active pane |
 | `other` | badges for your own key tables |

@@ -162,17 +162,21 @@ class Run:
         self.style = opt('@hintbar-style', 'plain')
         # ANSI colours by default, so the bar follows the terminal's theme.
         # A theme replaces them; the single colour options override either.
-        pal = dict(PALETTE)
+        pal, theme = dict(PALETTE), {}
         if opt('@hintbar-theme'):
             if not self.theme_file:
                 self.warn("unknown @hintbar-theme '%s', using terminal colours (themes: %s)"
                           % (self.now['@hintbar-theme'], ' '.join(theme_names(self.themes))))
             else:
                 try:
-                    pal.update(load_theme(self.theme_file))
+                    theme = load_theme(self.theme_file)
                 except ThemeError as e:
                     self.warn(str(e))
-        pal['key'] = pal['key'] or pal['alert']
+        pal.update(theme)
+        # Keys default to the theme's alert red. An ANSI red is tuned for the
+        # terminal's background, not the hint shapes, and in most schemes
+        # reads poorly on colour15, so without one keys take the label colour.
+        pal['key'] = pal['key'] or (pal['alert'] if 'alert' in theme else pal['label'])
         self.pal = pal
 
         def colour(name, default):
