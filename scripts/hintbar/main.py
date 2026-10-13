@@ -239,7 +239,8 @@ class Run:
 
     def line_settings(self):
         """Hint lines: tmux has at most 5 status lines, starting at row.
-        auto lays out the maximum; the resize hooks show as many as needed."""
+        auto lays out the maximum; the resize hooks show as many as needed.
+        0 lays out none, leaving the badge, window list and clock."""
         opt = self.opt
         try:
             self.row = int(opt('@hintbar-row', '1'))
@@ -249,7 +250,7 @@ class Run:
         max_lines = max(5 - self.row, 1)
         if lines == 'auto':
             nlines = max_lines
-        elif re.match(r'^[1-9][0-9]*$', lines):
+        elif re.match(r'^(0|[1-9][0-9]*)$', lines):
             nlines = int(lines)
             if nlines > max_lines:
                 self.warn("@hintbar-lines %s doesn't fit (tmux has 5 status lines, hints "
@@ -514,7 +515,7 @@ class Run:
             self.made.append(opt)
 
         for t in tables.values():
-            if not t.hints:
+            if not t.hints or not self.nlines:
                 continue
             refs = [t.refs[i] if i < len(t.refs) else '@hintbar-hint-%s-%d' % (t.name, i)
                     for i in range(len(t.hints))]
@@ -820,11 +821,9 @@ class Run:
         if self.cached:
             return
         q, s = self.script, self.shapes
-        badge = ''
-        rows = []
-        for l in range(self.nlines):
-            r, badge = self.assemble(l)
-            rows.append(r)
+        # the badge is the same on every line, and still wanted with none
+        rows = [self.assemble(l)[0] for l in range(self.nlines)]
+        badge = self.assemble(0)[1]
         for l in range(self.shown):
             name = 'status-format[%d]' % (self.row + l)
             q('set-option', '-g', name, '#[align=left,fill=%s]%s' % (s.bar_bg, rows[l]))

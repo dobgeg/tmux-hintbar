@@ -107,7 +107,7 @@ Set these in `~/.tmux.conf` above the plugin line, or live with `set -g`.
 | `@hintbar-style` | `plain` | hint shape: `plain`, `pill`, `slant`, `arrow`, `custom` |
 | `@hintbar-glyphs` | | the two edges for `custom`, e.g. `'▐ ▌'` |
 | `@hintbar-theme` | | a colour palette (see [Themes](#-themes)) |
-| `@hintbar-lines` | `1` | hint lines: `1` to `4`, or `auto` |
+| `@hintbar-lines` | `1` | hint lines: `0` to `4`, or `auto` |
 | `@hintbar-row` | `1` | the status line the hints start on |
 | `@hintbar-preview` | `on` | NORMAL previews the prefix row after `Ctrl-b +` |
 | `@hintbar-preview-first` | `d ? : r` | keys NORMAL's preview shows first, before the prefix row's own order |
@@ -198,6 +198,9 @@ set -g @hintbar-toggle-key h
 Nothing is bound unless you set it. The key takes over whatever it did
 before, and gets that back if you remove the option; a `bind` line in your
 keys file for the same key wins. The mode badge, clock and markers stay.
+
+To drop the hint line for good, `set -g @hintbar-lines 0`. The status bar
+stays a single line, with the mode badge, windows, markers and clock.
 
 ### Your own keys
 
